@@ -1,26 +1,30 @@
+---
 - name: Set kubectl version
   set_fact:
-    kubectl_version: "latest"
+    kubectl_version: "latest"  # Change to a specific version if needed
 
 - name: Check if kubectl is installed
-  command: kubectl version --client
+  shell: command -v kubectl
   register: kubectl_check
-  failed_when: kubectl_check.rc not in [0, 127]
-  ignore_errors: true
+  failed_when: false
+  changed_when: false
 
 - name: Download kubectl binary
   shell: |
     curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
   args:
     chdir: /tmp
-  when: kubectl_check.rc == 127
+  when: kubectl_check.stdout == ""
 
 - name: Make kubectl binary executable
   file:
     path: /tmp/kubectl
     mode: '0755'
-  when: kubectl_check.rc == 127
+  when: kubectl_check.stdout == ""
 
 - name: Move kubectl binary to /usr/local/bin
   command: mv /tmp/kubectl /usr/local/bin/kubectl
-  when: kubectl_check.rc == 127
+  when: kubectl_check.stdout == ""
+
+- name: Debug kubectl installation
+  command: kubectl version --client

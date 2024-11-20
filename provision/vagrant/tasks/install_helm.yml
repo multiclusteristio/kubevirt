@@ -1,0 +1,35 @@
+---
+- name: Set variables
+  set_fact:
+    desired_version: "v3.11.2"
+
+- name: Check if Helm is installed
+  command: helm version --short
+  register: helm_installed
+  ignore_errors: true
+
+- name: Install Helm if not installed
+  block:
+    - name: Download Helm tarball
+      get_url:
+        url: https://get.helm.sh/helm-{{ desired_version }}-linux-amd64.tar.gz  # Adjust to the latest version
+        dest: /tmp/helm-{{ desired_version }}-linux-amd64.tar.gz
+    - name: Extract Helm tarball
+      unarchive:
+        src: /tmp/helm-{{ desired_version }}-linux-amd64.tar.gz
+        dest: /tmp/
+        remote_src: yes
+    - name: Move Helm binary to /usr/local/bin
+      command: mv /tmp/linux-amd64/helm /usr/local/bin/helm
+      become: true
+    - name: Verify Helm installation
+      command: helm version --short
+      register: helm_version
+      become: true
+  when: helm_installed.rc != 0  # Only run this block if Helm is not installed   
+
+- name: Add HashiCorp Helm repository
+  command: helm repo add hashicorp https://helm.releases.hashicorp.com
+  
+- name: Update Helm repositories
+  command: helm repo update     

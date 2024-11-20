@@ -9,9 +9,12 @@
       - name: auh
         kubecontext: "kind-auh"      
         network: "auh-net"
+        kubeconfig: "{{ ansible_env.HOME }}/.kube/kind-auh.kubeconfig"
+        argocd_nodeport: 32000
         node_labels:
           topology.kubernetes.io/region: "uae"
           topology.kubernetes.io/zone: "auh-zone"
+          
 
   tasks:  
     - name: Install Docker and Dependencies
@@ -23,11 +26,55 @@
     - name: Install Kubectl 
       include_tasks: tasks/install_kubectl.yml 
 
+    - name: Install Helm 
+      include_tasks: tasks/install_helm.yml       
+
     - name: Install and Start Vault 
       include_tasks: tasks/install_vault.yml    
+
+    - name: Enable vault PKI 
+      include_tasks: tasks/vault_pki.yml          
 
     - name: Create kind clusters
       include_tasks: tasks/create_clusters.yml
       loop: "{{ clusters }}"
       loop_control:
-        loop_var: cluster                              
+        loop_var: cluster   
+
+    - name: Configure vault k8s auth for all clusters
+      include_tasks: tasks/vault_auth.yml
+      loop: "{{ clusters }}"
+      loop_control:
+        loop_var: cluster             
+
+    - name: Configure ArgoCD for all clusters
+      include_tasks: tasks/install_argo.yml
+      loop: "{{ clusters }}"
+      loop_control:
+        loop_var: cluster 
+
+    - name: Install cert manager for all clusters
+      include_tasks: tasks/cert_manager.yml
+      loop: "{{ clusters }}"
+      loop_control:
+        loop_var: cluster     
+
+    - name: Install cert manager issuer for all clusters
+      include_tasks: tasks/cert_manager_issuer.yml
+      loop: "{{ clusters }}"
+      loop_control:
+        loop_var: cluster       
+
+    - name: Install cert-manager-istio-csr for all clusters
+      include_tasks: tasks/cert_manager_istio_csr.yml
+      loop: "{{ clusters }}"
+      loop_control:
+        loop_var: cluster   
+
+    - name: Install istio for all clusters
+      include_tasks: tasks/istio.yml
+      loop: "{{ clusters }}"
+      loop_control:
+        loop_var: cluster           
+        
+                                                             

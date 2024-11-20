@@ -5,21 +5,22 @@
 - name: Check if Kind is installed
   command: kind --version
   register: kind_check
-  failed_when: kind_check.rc not in [0, 127]
+  failed_when: false
+  changed_when: false
   ignore_errors: true
 
 - name: Download Kind binary
   get_url:
     url: "https://kind.sigs.k8s.io/dl/{{ kind_version }}/kind-linux-amd64"
     dest: /tmp/kind
-  when: kind_check.rc == 127
+  when: kind_check.failed or "'kind version' not in (kind_check.stdout | default(''))"
 
 - name: Make Kind binary executable
   file:
     path: /tmp/kind
     mode: '0755'
-  when: kind_check.rc == 127
+  when: kind_check.failed or "'kind version' not in (kind_check.stdout | default(''))"
 
 - name: Move Kind binary to /usr/local/bin
   command: mv /tmp/kind /usr/local/bin/kind
-  when: kind_check.rc == 127
+  when: kind_check.failed or "'kind version' not in (kind_check.stdout | default(''))"

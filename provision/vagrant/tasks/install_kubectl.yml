@@ -1,0 +1,26 @@
+- name: Set kubectl version
+  set_fact:
+    kubectl_version: "latest"
+
+- name: Check if kubectl is installed
+  command: kubectl version --client
+  register: kubectl_check
+  failed_when: kubectl_check.rc not in [0, 127]
+  ignore_errors: true
+
+- name: Download kubectl binary
+  shell: |
+    curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+  args:
+    chdir: /tmp
+  when: kubectl_check.rc == 127
+
+- name: Make kubectl binary executable
+  file:
+    path: /tmp/kubectl
+    mode: '0755'
+  when: kubectl_check.rc == 127
+
+- name: Move kubectl binary to /usr/local/bin
+  command: mv /tmp/kubectl /usr/local/bin/kubectl
+  when: kubectl_check.rc == 127

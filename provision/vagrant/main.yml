@@ -1,0 +1,33 @@
+---
+- hosts: all
+  become: true
+  
+  vars:
+
+    clusters:
+    
+      - name: auh
+        kubecontext: "kind-auh"      
+        network: "auh-net"
+        node_labels:
+          topology.kubernetes.io/region: "uae"
+          topology.kubernetes.io/zone: "auh-zone"
+
+  tasks:  
+    - name: Install Docker and Dependencies
+      include_tasks: tasks/install_docker.yml   
+
+    - name: Install Kind 
+      include_tasks: tasks/install_kind.yml   
+
+    - name: Install Kubectl 
+      include_tasks: tasks/install_kubectl.yml 
+
+    - name: Install and Start Vault 
+      include_tasks: tasks/install_vault.yml    
+
+    - name: Create kind clusters
+      include_tasks: tasks/create_clusters.yml
+      loop: "{{ clusters }}"
+      loop_control:
+        loop_var: cluster                              

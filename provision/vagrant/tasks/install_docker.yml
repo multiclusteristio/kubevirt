@@ -1,0 +1,47 @@
+- name: Set Docker version
+  set_fact:
+    docker_version: "latest"
+
+- name: Check if Docker is installed
+  command: docker --version
+  register: docker_check
+  failed_when: docker_check.rc not in [0, 127]
+  ignore_errors: true
+
+- name: Install Docker prerequisites
+  apt:
+    name:
+      - apt-transport-https
+      - ca-certificates
+      - curl
+      - software-properties-common
+    state: present
+  when: docker_check.rc == 127
+
+- name: Add Docker GPG key
+  shell: |
+    curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+  args:
+    warn: false
+  when: docker_check.rc == 127
+
+- name: Add Docker repository
+  shell: |
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" > /etc/apt/sources.list.d/docker.list
+  when: docker_check.rc == 127
+
+- name: Install Docker
+  apt:
+    name:
+      - docker-ce
+      - docker-ce-cli
+      - containerd.io
+    state: present
+  when: docker_check.rc == 127
+
+- name: Start and enable Docker service
+  service:
+    name: docker
+    state: started
+    enabled: yes
+  when: docker_check.rc == 127

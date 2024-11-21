@@ -1,0 +1,33 @@
+- name: Define KubeVirt version
+  set_fact:
+    kubevirt_version: "v1.4.0"
+
+- name: Apply KubeVirt operator manifest
+  shell: kubectl --context kind-{{ cluster.name }} create -f "https://github.com/kubevirt/kubevirt/releases/download/{{ kubevirt_version }}/kubevirt-operator.yaml"
+  args:
+    executable: /bin/bash
+
+- name: Apply KubeVirt custom resource manifest
+  shell: kubectl --context kind-{{ cluster.name }} create -f "https://github.com/kubevirt/kubevirt/releases/download/{{ kubevirt_version }}/kubevirt-cr.yaml"
+  args:
+    executable: /bin/bash
+
+- name: Patch KubeVirt for developer configuration
+  shell: |
+    kubectl --context kind-{{ cluster.name }} -n kubevirt patch kubevirt kubevirt --type=merge --patch '{"spec":{"configuration":{"developerConfiguration":{"useEmulation":true}}}}'
+  args:
+    executable: /bin/bash
+
+- name: Wait for KubeVirt to be deployed
+  shell: |
+    kubectl --context kind-{{ cluster.name }} get kubevirt.kubevirt.io/kubevirt -n kubevirt -o=jsonpath="{.status.phase}"
+  register: kubevirt_phase
+  until: kubevirt_phase.stdout == "Deployed"
+  retries: 30
+  delay: 10
+  args:
+    executable: /bin/bash
+
+- name: Debug KubeVirt deployment phase
+  debug:
+    msg: "KubeVirt deployment phase: {{ kubevirt_phase.stdout }}"

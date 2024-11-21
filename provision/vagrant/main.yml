@@ -10,6 +10,7 @@
         network: "auh-net"
         kubeconfig: "{{ ansible_env.HOME }}/.kube/kind-auh.kubeconfig"
         argocd_nodeport: 32000
+        istio_igw_http_port: 31000
         node_labels:
           topology.kubernetes.io/region: "uae"
           topology.kubernetes.io/zone: "auh-zone"
@@ -74,6 +75,13 @@
       include_tasks: tasks/istio.yml
       loop: "{{ clusters }}"
       loop_control:
-        loop_var: cluster           
+        loop_var: cluster    
+
+    - name: Install istio for all clusters
+      include_tasks: tasks/kubevirt.yml
+      loop: "{{ clusters }}"
+      loop_control:
+        loop_var: cluster       
+      when: cluster.name == 'auh'            
         
                                                              

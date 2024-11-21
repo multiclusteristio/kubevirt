@@ -1,0 +1,23 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  labels:
+    app.kubernetes.io/instance: accounts
+  name: accounts
+  namespace: accounts
+spec:
+  gateways:
+    - istio-system/ingress
+  hosts:
+    - '*'
+  http:
+    - match:
+        - uri:
+            prefix: /accounts
+      rewrite:
+        uri: /api
+      route:
+        - destination:
+            host: accounts-ms-base.accounts.svc.cluster.local
+            port:
+              number: 80     

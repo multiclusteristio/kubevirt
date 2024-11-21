@@ -1,0 +1,28 @@
+---
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: transfers-dest-rule
+  namespace: transfers
+spec:
+  host: transfers-ms-base.transfers.svc.cluster.local
+  trafficPolicy:
+    connectionPool:
+      http:
+        http2MaxRequests: 10
+        maxRequestsPerConnection: 10
+
+    loadBalancer:
+      simple: ROUND_ROBIN
+      localityLbSetting:
+        enabled: true
+        failover:
+          - from: auh-zone
+            to: dxb-zone
+          - from: dxb-zone
+            to: auh-zone    
+
+    outlierDetection:
+      consecutive5xxErrors: 1
+      interval: 20s
+      baseEjectionTime: 30s

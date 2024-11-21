@@ -1,0 +1,17 @@
+apiVersion: security.istio.io/v1beta1
+kind: PeerAuthentication
+metadata:
+  name: account-mtls
+  namespace: accounts  
+spec:
+  selector:
+    matchLabels:
+        app.kubernetes.io/instance: accounts
+        app.kubernetes.io/name: ms-base
+  mtls:
+    mode: STRICT
+
+# mtls:
+#     mode: PERMISSIVE    
+
+# The PERMISSIVE mutual authentication does just that, as it permits workloads to accept both encrypted and clear-text requests.

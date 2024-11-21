@@ -70,7 +70,7 @@
 
 - name: Ensure Vault server is accessible
   uri:
-    url: "http://{{ vault_vm_ip }}:8200/v1/sys/health"
+    url: "http://{{ vault_listener_address }}/v1/sys/health"
     method: GET
     return_content: yes
     status_code: 200

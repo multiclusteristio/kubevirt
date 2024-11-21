@@ -1,19 +1,21 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: testvm-vs
-  namespace: payment
+  labels:
+    app.kubernetes.io/instance: accounts
+  name: accounts
+  namespace: accounts
 spec:
   hosts:
     - testvm-service.payment.svc.cluster.local 
   gateways:
-    - mesh  # Use the default Istio mesh gateway
+    - istio-system/mesh
   http:
     - match:
         - uri:
-            prefix: /  # Match all traffic
+            prefix: /payments
       route:
         - destination:
             host: testvm-service.payment.svc.cluster.local 
             port:
-              number: 8080
+              number: 8080     

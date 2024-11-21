@@ -78,7 +78,12 @@
     --set service.ports[0].port=80 \
     --set service.ports[0].targetPort=8080 \
     --set service.ports[0].nodePort={{ cluster.istio_igw_http_port }} \
+    --set service.ports[1].name=https \
+    --set service.ports[1].port=443 \
+    --set service.ports[1].targetPort=8443 \
+    --set service.ports[1].nodePort={{ cluster.istio_igw_https_port }}
     --set labels.istio=ingressgateway
+    --set labels.istio=ingressgateway 
   when: istio_gateway_status.rc == 1 and istiod_status.rc in [0, 1]
 
 

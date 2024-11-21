@@ -9,8 +9,11 @@
         kubecontext: "kind-auh"      
         network: "auh-net"
         kubeconfig: "{{ ansible_env.HOME }}/.kube/kind-auh.kubeconfig"
+        
         argocd_nodeport: 32000
         istio_igw_http_port: 31000
+        istio_igw_https_port: 31001
+
         node_labels:
           topology.kubernetes.io/region: "uae"
           topology.kubernetes.io/zone: "auh-zone"
@@ -77,11 +80,17 @@
       loop_control:
         loop_var: cluster    
 
-    - name: Install istio for all clusters
+    - name: Install kubevirt for auh cluster
       include_tasks: tasks/kubevirt.yml
       loop: "{{ clusters }}"
       loop_control:
         loop_var: cluster       
-      when: cluster.name == 'auh'            
+      when: cluster.name == 'auh' 
+
+    - name: Creat root apps
+      include_tasks: tasks/create_root_app.yml
+      loop: "{{ clusters }}"
+      loop_control:
+        loop_var: cluster                   
         
                                                              

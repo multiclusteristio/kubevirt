@@ -5,7 +5,7 @@ metadata:
   namespace: istio-system    
 spec:
   vault:
-    server: http://host.docker.internal:8200
+    server: http://192.168.1.10:8200
     path: pki/sign/istio-ca
     auth:
       kubernetes:

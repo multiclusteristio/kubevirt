@@ -1,10 +1,10 @@
 - name: Set variables
   set_fact:
     common_name: "mydomain.com" 
-    issuing_certificates: "http://localhost:8200/v1/pki/ca"
-    crl_distribution_points: "http://localhost:8200/v1/pki/crl"
+    issuing_certificates: "http://192.168.1.10:8200/v1/pki/ca"
+    crl_distribution_points: "http://192.168.1.10:8200/v1/pki/crl"
     cert_role: "istio-ca"
-    vault_address: "http://localhost:8200"  # Vault server address       
+    vault_address: "http://192.168.1.10:8200"  # Vault server address       
     vault_token: "root"           # Vault token          
 
 - name: Enable PKI secrets engine

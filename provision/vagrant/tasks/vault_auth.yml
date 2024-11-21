@@ -2,7 +2,7 @@
 
 - name: Set variables
   set_fact:
-    vault_address: "http://localhost:8200"  # Vault server address       
+    vault_address: "http://192.168.1.10:8200"  # Vault server address       
     vault_token: "root"           # Vault token        
      
 - name: Ensure Istio system namespace exists for cluster {{ cluster.name }}

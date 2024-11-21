@@ -3,7 +3,6 @@
   become: true
   
   vars:
-
     clusters:
     
       - name: auh

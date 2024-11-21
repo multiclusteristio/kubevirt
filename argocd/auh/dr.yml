@@ -1,0 +1,10 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: testvm-dr
+  namespace: payment
+spec:
+  host: testvm-service.payment.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE

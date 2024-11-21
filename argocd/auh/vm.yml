@@ -33,7 +33,7 @@ spec:
         machine:
           type: ""
       networks:
-        - name: testSlirp
+        - name: testMasquerade
           pod: {}
 
       volumes:

@@ -25,15 +25,15 @@ spec:
               disk:
                 bus: virtio
           interfaces:
-            - name: default
-              masquerade: {}
+            - name: testSlirp
+              slirp: {}
               ports:
                 - name: http
                   port: 8080   # Exposing the VM's HTTP service on port 8080
         machine:
           type: ""
       networks:
-        - name: default
+        - name: testSlirp
           pod: {}
 
       volumes:

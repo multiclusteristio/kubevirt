@@ -1,0 +1,55 @@
+- name: Remove existing Go installation (if present)
+  ansible.builtin.file:
+    path: /usr/local/go
+    state: absent
+
+- name: Install Go
+  ansible.builtin.shell: |
+    curl -LO https://golang.org/dl/go{{ go_version }}.linux-amd64.tar.gz
+    tar -C /usr/local -xzf go{{ go_version }}.linux-amd64.tar.gz
+    echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+    export PATH=$PATH:/usr/local/go/bin
+  args:
+    executable: /bin/bash
+  vars:
+    go_version: "1.21.1"  # Replace with the desired version
+
+- name: Add Go to PATH for the current session
+  ansible.builtin.shell: |
+    export PATH=$PATH:/usr/local/go/bin
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+- name: Verify Go installation
+  ansible.builtin.shell: |
+    export PATH=$PATH:/usr/local/go/bin
+    go version
+  args:
+    executable: /bin/bash
+  changed_when: false
+
+
+- name: Install Cloud Provider KIND
+  ansible.builtin.shell: |
+    export PATH=$PATH:/usr/local/go/bin
+    go install sigs.k8s.io/cloud-provider-kind@latest
+  environment:
+    GOPATH: "{{ ansible_env.HOME }}/go"
+  args:
+    executable: /bin/bash
+
+
+- name: Move Cloud Provider KIND to /usr/local/bin
+  ansible.builtin.shell: |
+    sudo install {{ ansible_env.HOME }}/go/bin/cloud-provider-kind /usr/local/bin
+  args:
+    executable: /bin/bash
+
+- name: Run Cloud Provider KIND in background
+  ansible.builtin.shell: |
+    nohup cloud-provider-kind > /tmp/cloud-provider-kind.log 2>&1 &
+  args:
+    executable: /bin/bash
+  changed_when: false
+

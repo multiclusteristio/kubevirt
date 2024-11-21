@@ -20,6 +20,7 @@
           
 
   tasks:  
+
     - name: Install Docker and Dependencies
       include_tasks: tasks/install_docker.yml   
 
@@ -91,6 +92,9 @@
       include_tasks: tasks/create_root_app.yml
       loop: "{{ clusters }}"
       loop_control:
-        loop_var: cluster                   
+        loop_var: cluster       
+
+    - name: Install and run kind cloud provider
+      include_tasks: tasks/kind_cloud_provider.yml           
         
                                                              

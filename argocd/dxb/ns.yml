@@ -26,4 +26,14 @@ metadata:
   annotations:
     argocd.argoproj.io/sync-wave: "0"
   labels:
-    istio-injection: enabled      
+    istio-injection: enabled   
+
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: payments 
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+  labels:
+    istio-injection: enabled          

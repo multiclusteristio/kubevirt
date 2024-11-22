@@ -41,7 +41,7 @@ namespace Transfers.API.Controllers
                 // Deserialize JSON responses
                 var limitsResponse = JsonSerializer.Deserialize<LimitsResponse>(limitsTask.Result);
                 var accountsResponse = JsonSerializer.Deserialize<AccountsResponse>(accountsTask.Result);
-                var paymentsResponse = JsonSerializer.Deserialize<string>(paymentsTask.Result);
+                var paymentsResponse = paymentsTask.Result;
 
                 // Combine results into a single object
                 var combinedResult = new

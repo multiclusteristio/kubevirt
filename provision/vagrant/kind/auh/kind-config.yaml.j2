@@ -4,7 +4,7 @@ apiVersion: kind.x-k8s.io/v1alpha4
 
 networking:
   apiServerAddress: "0.0.0.0"
-  apiServerPort: 6443          
+  apiServerPort: 5443          
 
 nodes:
   - role: control-plane
@@ -22,5 +22,14 @@ nodes:
         hostPort: 31001      
         protocol: TCP        
 
-      - containerPort: 6443  
+      - containerPort: 5443  
         hostPort: 8443 
+
+    labels:
+      topology.kubernetes.io/region: uae
+      topology.kubernetes.io/zone: auh-zone  
+
+  - role: worker
+    labels:
+      topology.kubernetes.io/region: uae
+      topology.kubernetes.io/zone: auh-zone           

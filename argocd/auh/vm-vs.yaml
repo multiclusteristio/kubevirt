@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: testvm-vs
-  namespace: payment
+  namespace: payments
 spec:
   hosts:
     - '*'
@@ -14,6 +14,6 @@ spec:
             prefix: /payments
       route:
         - destination:
-            host: testvm-service.payment.svc.cluster.local 
+            host: testvm-service.payments.svc.cluster.local 
             port:
               number: 8080

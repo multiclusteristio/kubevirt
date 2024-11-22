@@ -30,65 +30,73 @@
 
   tasks:
 
-    - name: Install Docker and Dependencies
-      include_tasks: tasks/install_docker.yml   
-
-    - name: Install Kind 
-      include_tasks: tasks/install_kind.yml   
-
-    - name: Install Kubectl 
-      include_tasks: tasks/install_kubectl.yml 
-
-    - name: Install Helm 
-      include_tasks: tasks/install_helm.yml       
-
-    - name: Install and Start Vault 
-      include_tasks: tasks/install_vault.yml    
-
-    - name: Enable vault PKI 
-      include_tasks: tasks/vault_pki.yml          
-
-    - name: Create kind clusters
-      include_tasks: tasks/create_clusters.yml
-      loop: "{{ clusters }}"
-      loop_control:
-        loop_var: cluster   
-
-    - name: Configure vault k8s auth for all clusters
-      include_tasks: tasks/vault_auth.yml
-      loop: "{{ clusters }}"
-      loop_control:
-        loop_var: cluster             
-
-    - name: Configure ArgoCD for all clusters
-      include_tasks: tasks/install_argo.yml
-      loop: "{{ clusters }}"
-      loop_control:
-        loop_var: cluster 
-
-    - name: Install cert manager for all clusters
-      include_tasks: tasks/cert_manager.yml
-      loop: "{{ clusters }}"
-      loop_control:
-        loop_var: cluster     
-
-    - name: Install cert manager issuer for all clusters
-      include_tasks: tasks/cert_manager_issuer.yml
+    - name: Install kubevirt for auh cluster
+      include_tasks: tasks/kubevirt.yml
       loop: "{{ clusters }}"
       loop_control:
         loop_var: cluster       
+      when: cluster.name == 'auh'  
 
-    - name: Install cert-manager-istio-csr for all clusters
-      include_tasks: tasks/cert_manager_istio_csr.yml
-      loop: "{{ clusters }}"
-      loop_control:
-        loop_var: cluster   
 
-    - name: Install istio for all clusters
-      include_tasks: tasks/istio.yml
-      loop: "{{ clusters }}"
-      loop_control:
-        loop_var: cluster    
+    # - name: Install Docker and Dependencies
+    #   include_tasks: tasks/install_docker.yml   
+
+    # - name: Install Kind 
+    #   include_tasks: tasks/install_kind.yml   
+
+    # - name: Install Kubectl 
+    #   include_tasks: tasks/install_kubectl.yml 
+
+    # - name: Install Helm 
+    #   include_tasks: tasks/install_helm.yml       
+
+    # - name: Install and Start Vault 
+    #   include_tasks: tasks/install_vault.yml    
+
+    # - name: Enable vault PKI 
+    #   include_tasks: tasks/vault_pki.yml          
+
+    # - name: Create kind clusters
+    #   include_tasks: tasks/create_clusters.yml
+    #   loop: "{{ clusters }}"
+    #   loop_control:
+    #     loop_var: cluster   
+
+    # - name: Configure vault k8s auth for all clusters
+    #   include_tasks: tasks/vault_auth.yml
+    #   loop: "{{ clusters }}"
+    #   loop_control:
+    #     loop_var: cluster             
+
+    # - name: Configure ArgoCD for all clusters
+    #   include_tasks: tasks/install_argo.yml
+    #   loop: "{{ clusters }}"
+    #   loop_control:
+    #     loop_var: cluster 
+
+    # - name: Install cert manager for all clusters
+    #   include_tasks: tasks/cert_manager.yml
+    #   loop: "{{ clusters }}"
+    #   loop_control:
+    #     loop_var: cluster     
+
+    # - name: Install cert manager issuer for all clusters
+    #   include_tasks: tasks/cert_manager_issuer.yml
+    #   loop: "{{ clusters }}"
+    #   loop_control:
+    #     loop_var: cluster       
+
+    # - name: Install cert-manager-istio-csr for all clusters
+    #   include_tasks: tasks/cert_manager_istio_csr.yml
+    #   loop: "{{ clusters }}"
+    #   loop_control:
+    #     loop_var: cluster   
+
+    # - name: Install istio for all clusters
+    #   include_tasks: tasks/istio.yml
+    #   loop: "{{ clusters }}"
+    #   loop_control:
+    #     loop_var: cluster    
 
     # - name: Install kubevirt for auh cluster
     #   include_tasks: tasks/kubevirt.yml
@@ -97,30 +105,30 @@
     #     loop_var: cluster       
     #   when: cluster.name == 'auh'  
 
-    - name: Install and run kind cloud provider
-      include_tasks: tasks/kind_cloud_provider.yml 
+    # - name: Install and run kind cloud provider
+    #   include_tasks: tasks/kind_cloud_provider.yml 
 
-    - name: Install istioctl
-      include_tasks: tasks/istioctl.yml          
+    # - name: Install istioctl
+    #   include_tasks: tasks/istioctl.yml          
 
-    - name: Include remote secret creation tasks
-      include_tasks: tasks/remote_secret.yml
-      loop: >
-        {{ [
-          {"source_cluster": clusters[1], "target_cluster": clusters[0]},
-          {"source_cluster": clusters[0], "target_cluster": clusters[1]}
-        ] }}
-      loop_control:
-        loop_var: cluster_pair
-      vars:
-        source_cluster: "{{ cluster_pair.source_cluster }}"
-        target_cluster: "{{ cluster_pair.target_cluster }}"       
+    # - name: Include remote secret creation tasks
+    #   include_tasks: tasks/remote_secret.yml
+    #   loop: >
+    #     {{ [
+    #       {"source_cluster": clusters[1], "target_cluster": clusters[0]},
+    #       {"source_cluster": clusters[0], "target_cluster": clusters[1]}
+    #     ] }}
+    #   loop_control:
+    #     loop_var: cluster_pair
+    #   vars:
+    #     source_cluster: "{{ cluster_pair.source_cluster }}"
+    #     target_cluster: "{{ cluster_pair.target_cluster }}"       
 
-    - name: Create root apps
-      include_tasks: tasks/create_root_app.yml
-      loop: "{{ clusters }}"
-      loop_control:
-        loop_var: cluster       
+    # - name: Create root apps
+    #   include_tasks: tasks/create_root_app.yml
+    #   loop: "{{ clusters }}"
+    #   loop_control:
+    #     loop_var: cluster       
 
-    - name: Install virtctl
-      include_tasks: tasks/install_virtctl.yml            
+    # - name: Install virtctl
+    #   include_tasks: tasks/install_virtctl.yml            

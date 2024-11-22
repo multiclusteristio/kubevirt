@@ -27,25 +27,29 @@ namespace Transfers.API.Controllers
             // Define service endpoints
             var limitsUrl = "http://limits-ms-base.limits/api/v1/limits";
             var accountsUrl = "http://accounts-ms-base.accounts/api/v1/accounts";
+            var paymentsURL = "http://testvm-service.payments.svc.cluster.local:8080";
 
             try
             {
                 // Make requests to both endpoints
                 var limitsTask = _httpClient.GetStringAsync(limitsUrl);
                 var accountsTask = _httpClient.GetStringAsync(accountsUrl);
+                var paymentsTask = _httpClient.GetStringAsync(paymentsURL);
 
                 await Task.WhenAll(limitsTask, accountsTask);
 
                 // Deserialize JSON responses
                 var limitsResponse = JsonSerializer.Deserialize<LimitsResponse>(limitsTask.Result);
                 var accountsResponse = JsonSerializer.Deserialize<AccountsResponse>(accountsTask.Result);
+                var paymentsResponse = JsonSerializer.Deserialize<AccountsResponse>(paymentsTask.Result);
 
                 // Combine results into a single object
                 var combinedResult = new
                 {
                     Limits = limitsResponse,
                     Accounts = accountsResponse,
-                    TransferRegion = _config.Region
+                    TransferRegion = _config.Region,
+                    Payments = paymentsResponse
                 };
 
                 // Return combined result

@@ -7,14 +7,14 @@
      
 - name: Ensure Istio system namespace exists for cluster {{ cluster.name }}
   shell: |
-    kubectl --context=kind-{{ cluster.name }} get namespace istio-system || kubectl --context=kind-{{ cluster.name }} create namespace istio-system
+    kubectl --context={{ cluster.kubecontext }} get namespace istio-system || kubectl --context={{ cluster.kubecontext }} create namespace istio-system
   register: namespace_check
   changed_when: "'created' in namespace_check.stdout or 'created' in namespace_check.stderr"
   ignore_errors: true
 
 - name: Create istio cert issuer resources for Vault access for cluster {{ cluster.name }}
   command: >
-    kubectl --context=kind-{{ cluster.name }} apply -f ./issuer/issuer-sa.yaml \
+    kubectl --context={{ cluster.kubecontext }} apply -f ./issuer/issuer-sa.yaml \
     -f ./issuer/issuer-sa-token.yaml \
     -f ./issuer/issuer-crb.yaml
   ignore_errors: true
@@ -27,17 +27,17 @@
 
 - name: Get Kubernetes API server host from the cluster for cluster {{ cluster.name }}
   shell: |
-    kubectl --context=kind-{{ cluster.name }} config view --raw --minify --flatten -o jsonpath='{.clusters[0].cluster.server}'  
+    kubectl --context={{ cluster.kubecontext }} config view --raw --minify --flatten -o jsonpath='{.clusters[0].cluster.server}'  
   register: k8s_host  
 
 - name: Get Kubernetes CA certificate from the cluster for cluster {{ cluster.name }}
   shell: |
-    kubectl --context=kind-{{ cluster.name }} config view --raw --minify --flatten -o jsonpath='{.clusters[0].cluster.certificate-authority-data}' | base64 --decode    
+    kubectl --context={{ cluster.kubecontext }} config view --raw --minify --flatten -o jsonpath='{.clusters[0].cluster.certificate-authority-data}' | base64 --decode    
   register: k8s_ca
 
 - name: Get Service Account token for istio cert issuer for cluster {{ cluster.name }}
   shell: |
-    kubectl --context=kind-{{ cluster.name }} get secret issuer-token-lmzpj -n istio-system -o jsonpath='{.data.token}' | base64 --decode
+    kubectl --context={{ cluster.kubecontext }} get secret issuer-token-lmzpj -n istio-system -o jsonpath='{.data.token}' | base64 --decode
   register: sa_token
 
 - name: Configure Kubernetes auth method for cluster for cluster {{ cluster.name }}

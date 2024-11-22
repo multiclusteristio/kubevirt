@@ -5,7 +5,7 @@
 
 - name: Add Helm repository for cert-manager-istio-csr for cluster {{ cluster.name }}
   command:
-    cmd: helm repo add jetstack https://charts.jetstack.io --kube-context kind-{{ cluster.name }}
+    cmd: helm repo add jetstack https://charts.jetstack.io --kube-context {{ cluster.kubecontext }}
   register: helm_repo_add
   failed_when: "'Error' in helm_repo_add.stderr"
   changed_when: "'Error' not in helm_repo_add.stderr"
@@ -13,14 +13,14 @@
 
 - name: Update Helm repositories for cluster {{ cluster.name }}
   command:
-    cmd: helm repo update --kube-context kind-{{ cluster.name }}
+    cmd: helm repo update --kube-context {{ cluster.kubecontext }}
   register: helm_repo_update
   failed_when: "'Error' in helm_repo_update.stderr"
   changed_when: "'Error' not in helm_repo_update.stderr"
 
 
 - name: Check if cert-manager-istio-csr is already installed for cluster {{ cluster.name }}
-  command: "helm status cert-manager-istio-csr -n cert-manager --kube-context kind-{{ cluster.name }}"
+  command: "helm status cert-manager-istio-csr -n cert-manager --kube-context {{ cluster.kubecontext }}"
   register: helm_release_check
   failed_when: helm_release_check.rc not in [0, 1]
   changed_when: false
@@ -29,7 +29,7 @@
 - name: Install cert-manager-istio-csr using Helm and wait for it to become healthy for cluster {{ cluster.name }}
   command: >
     helm install cert-manager-istio-csr jetstack/cert-manager-istio-csr --namespace cert-manager \
-    --kube-context kind-{{ cluster.name }} \
+    --kube-context {{ cluster.kubecontext }} \
     --version {{ desired_version }} \
     --set app.server.clusterID={{ cluster.name }} \
     --wait \
@@ -42,7 +42,7 @@
 
 - name: Ensure cert-manager-istio-csr is deployed and healthy for cluster {{ cluster.name }}
   command:
-    cmd: helm status cert-manager-istio-csr --namespace cert-manager --kube-context kind-{{ cluster.name }}
+    cmd: helm status cert-manager-istio-csr --namespace cert-manager --kube-context {{ cluster.kubecontext }}
   register: helm_status
   retries: 10
   delay: 30

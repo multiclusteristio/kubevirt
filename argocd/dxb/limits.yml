@@ -7,12 +7,12 @@ metadata:
 spec:
   project: default
   source:
-    repoURL: https://github.com/multiclusteristio/poc.git
+    repoURL: https://github.com/multiclusteristio/kubevirt.git
     targetRevision: HEAD
     path: apps/helm/limits.api
     helm:
       valueFiles: 
-        - values-auh.yaml
+        - values-dxb.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: limits 

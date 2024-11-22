@@ -14,7 +14,7 @@
   command: helm repo update
 
 - name: Check if ArgoCD is already installed
-  command: helm list --namespace argocd --kube-context "kind-{{ cluster.name }}"
+  command: helm list --namespace argocd --kube-context {{ cluster.kubecontext }}
   register: helm_installed
   failed_when: false
   changed_when: false
@@ -28,19 +28,10 @@
     --set server.service.type=NodePort
     --set server.service.nodePort="{{ cluster.argocd_nodeport }}"
     --set configs.secret.argocdServerAdminPassword="{{ admin_password }}" 
-    --kube-context kind-{{ cluster.name }}
+    --kube-context {{ cluster.kubecontext }}
   when: "'argocd' not in helm_installed.stdout"
 
 - name: Patch NodePort for ArgoCD server
   shell: |
-    kubectl --context kind-{{ cluster.name }} -n argocd patch svc argocd-server \
+    kubectl --context {{ cluster.kubecontext }} -n argocd patch svc argocd-server \
     -p '{"spec": {"type": "NodePort", "ports": [{"port": 443, "targetPort": 8080, "nodePort": {{ cluster.argocd_nodeport }} }]}}'
-
-# - name: Set ArgoCD admin password
-#   shell: |
-#     kubectl -n argocd get secret argocd-secret --kube-context "{{ cluster.kubecontext }}" --kubeconfig="{{ cluster.kubeconfig }}" || \
-#     kubectl -n argocd patch secret argocd-secret \
-#     -p "{\"data\": {\"admin.password\": \"{{ admin_password | b64encode }}\"}}"
-#   environment:
-#     KUBECONFIG: "{{ cluster.kubeconfig }}"    
- 

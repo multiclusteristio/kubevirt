@@ -5,20 +5,20 @@
     istio_mesh_name: "uaemesh"    
 
 - name: Add Istio Helm repository for cluster {{ cluster.name }}
-  command: helm repo add istio https://istio-release.storage.googleapis.com/charts --kube-context kind-{{ cluster.name }}
+  command: helm repo add istio https://istio-release.storage.googleapis.com/charts --kube-context {{ cluster.kubecontext }}
   register: istio_repo_add
   failed_when: istio_repo_add.rc != 0
   changed_when: istio_repo_add.rc == 0
 
 - name: Update Helm repositories for cluster {{ cluster.name }}
-  command: helm repo update --kube-context kind-{{ cluster.name }}
+  command: helm repo update --kube-context {{ cluster.kubecontext }}
   register: helm_repo_update
   failed_when: helm_repo_update.rc != 0
   changed_when: false
 
 
 - name: Check if Istio base is already deployed for cluster {{ cluster.name }}
-  command: "helm status base -n istio-system --kube-context kind-{{ cluster.name }}"
+  command: "helm status base -n istio-system --kube-context {{ cluster.kubecontext }}"
   register: istio_base_status
   failed_when: istio_base_status.rc not in [0, 1]
   changed_when: false
@@ -26,14 +26,14 @@
 - name: Install Istio base if not installed for cluster {{ cluster.name }}
   command: |
     helm install base istio/base --namespace istio-system \
-    --kube-context kind-{{ cluster.name }} \
+    --kube-context {{ cluster.kubecontext }} \
     --version {{ istio_version }} \
     --wait
   when: istio_base_status.rc == 1
 
 
 - name: Check if istiod is already deployed for cluster {{ cluster.name }}
-  command: "helm status istiod -n istio-system --kube-context kind-{{ cluster.name }}"
+  command: "helm status istiod -n istio-system --kube-context {{ cluster.kubecontext }}"
   register: istiod_status
   failed_when: istiod_status.rc not in [0, 1]
   changed_when: false
@@ -42,7 +42,7 @@
 - name: Install Istiod if not installed for cluster {{ cluster.name }}
   command: |
     helm install istiod istio/istiod --namespace istio-system \
-    --kube-context kind-{{ cluster.name }} \
+    --kube-context {{ cluster.kubecontext }} \
     --set global.meshID={{ istio_mesh_name }} \
     --set global.network={{ cluster.network }} \
     --set global.multiCluster.enabled=true \
@@ -53,7 +53,7 @@
 
 
 - name: Wait for Istiod to be fully deployed for cluster {{ cluster.name }}
-  command: kubectl --context kind-{{ cluster.name }} -n istio-system wait --for=condition=Ready pod -l app=istiod --timeout=300s
+  command: kubectl --context {{ cluster.kubecontext }} -n istio-system wait --for=condition=Ready pod -l app=istiod --timeout=300s
   register: istiod_rollout_status
   retries: 30
   delay: 10
@@ -62,7 +62,7 @@
 
 
 - name: Check if Istio ingress gateway is already deployed for cluster {{ cluster.name }}
-  command: "helm status istio-ingressgateway -n istio-system --kube-context kind-{{ cluster.name }}"
+  command: "helm status istio-ingressgateway -n istio-system --kube-context {{ cluster.kubecontext }}"
   register: istio_gateway_status
   failed_when: istio_gateway_status.rc not in [0, 1]
   changed_when: false
@@ -71,7 +71,7 @@
 - name: Install Istio Ingress Gateway if not installed for cluster {{ cluster.name }}
   command: |
     helm install istio-ingressgateway istio/gateway --namespace istio-system \
-    --kube-context kind-{{ cluster.name }} \
+    --kube-context {{ cluster.kubecontext }} \
     --version {{ istio_version }} \
     --set service.type=NodePort \
     --set service.ports[0].name=http \
@@ -88,7 +88,7 @@
 
 
 - name: Wait for Istio Ingress Gateway to be deployed for cluster {{ cluster.name }}
-  command: kubectl --context kind-{{ cluster.name }} rollout status deployment/istio-ingressgateway -n istio-system
+  command: kubectl --context {{ cluster.kubecontext }} rollout status deployment/istio-ingressgateway -n istio-system
   register: istio_ingress_gateway_rollout_status
   retries: 30
   delay: 10
@@ -97,7 +97,7 @@
 
 
 - name: Check if Istio eastwestgateway is already deployed for cluster {{ cluster.name }}
-  command: "helm status istio-eastwestgateway -n istio-system --kube-context kind-{{ cluster.name }}"
+  command: "helm status istio-eastwestgateway -n istio-system --kube-context {{ cluster.kubecontext }}"
   register: istio_ewgateway_status
   failed_when: istio_ewgateway_status.rc not in [0, 1]
   changed_when: false
@@ -106,7 +106,7 @@
 - name: Install Istio eastwestgateway if not installed for cluster {{ cluster.name }}
   command: |
     helm install istio-eastwestgateway istio/gateway --namespace istio-system \
-    --kube-context kind-{{ cluster.name }} \
+    --kube-context {{ cluster.kubecontext }} \
     --version {{ istio_version }} \
     --set networkGateway={{ cluster.network }} \
     --set labels.istio=eastwestgateway
@@ -114,7 +114,7 @@
 
 
 - name: Wait for Istio eastwestgateway Gateway to be deployed for cluster {{ cluster.name }}
-  command: kubectl --context kind-{{ cluster.name }} rollout status deployment/istio-eastwestgateway -n istio-system
+  command: kubectl --context {{ cluster.kubecontext }} rollout status deployment/istio-eastwestgateway -n istio-system
   register: istio_eastwestgateway_rollout_status
   retries: 30
   delay: 10

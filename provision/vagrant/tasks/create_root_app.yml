@@ -4,7 +4,7 @@
     repo_URL: "https://github.com/multiclusteristio/kubevirt.git"
 
 - name: Check if ArgoCD application exists {{ cluster.name }}
-  shell: kubectl --context kind-{{ cluster.name }} get application "{{ cluster.name }}-root" -n argocd
+  shell: kubectl --context {{ cluster.kubecontext }} get application "{{ cluster.name }}-root" -n argocd
   args:
     executable: /bin/bash
   register: app_check
@@ -12,7 +12,7 @@
 
 - name: Create ArgoCD application if not present for {{ cluster.name }}
   shell: |
-    kubectl --context kind-{{ cluster.name }} apply -f - <<EOF
+    kubectl --context {{ cluster.kubecontext }} apply -f - <<EOF
     apiVersion: argoproj.io/v1alpha1
     kind: Application
     metadata:
@@ -34,6 +34,4 @@
     EOF
   args:
     executable: /bin/bash
-  environment:
-    KUBECONFIG: "{{ cluster.kubeconfig }}"
   when: app_check.rc != 0

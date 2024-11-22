@@ -1,25 +1,34 @@
 - name: Set virtctl version
   set_fact:
-    virtctl_version: "v1.0.0"
+    virtctl_binary_url: "https://github.com/kubevirt/kubevirt/releases/download/v1.4.0/virtctl-v1.4.0-linux-amd64"
 
 - name: Check if virtctl is installed
   command: virtctl version
   register: virtctl_check
-  failed_when: virtctl_check.rc not in [0, 127]
+  failed_when: false
   ignore_errors: true
+
+- name: Debug virtctl check result
+  debug:
+    var: virtctl_check
 
 - name: Download virtctl binary
   get_url:
-    url: "https://github.com/kubevirt/kubevirt/releases/download/{{ virtctl_version }}/virtctl-{{ virtctl_version }}-linux-amd64"
+    url: "{{ virtctl_binary_url }}"
     dest: /tmp/virtctl
-  when: virtctl_check.rc == 127
-
-- name: Make virtctl binary executable
-  file:
-    path: /tmp/virtctl
     mode: '0755'
-  when: virtctl_check.rc == 127
+  when: virtctl_check.rc != 0
 
 - name: Move virtctl binary to /usr/local/bin
-  command: mv /tmp/virtctl /usr/local/bin/virtctl
-  when: virtctl_check.rc == 127
+  copy:
+    src: /tmp/virtctl
+    dest: /usr/local/bin/virtctl
+    remote_src: yes
+    mode: '0755'
+  when: virtctl_check.rc != 0
+
+- name: Ensure virtctl binary is executable
+  file:
+    path: /usr/local/bin/virtctl
+    mode: '0755'
+  when: virtctl_check.rc != 0

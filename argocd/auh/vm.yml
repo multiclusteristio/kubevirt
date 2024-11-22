@@ -4,12 +4,12 @@ metadata:
   name: testvm
   namespace: payment
 spec:
-  runStrategy: Always  # Ensure the VM is always running
+  runStrategy: Always
   template:
     metadata:
       labels:
         kubevirt.io/domain: testvm
-        app: testvm-app   # Additional label for service selector
+        app: testvm-app
     spec:
       domain:
         resources:
@@ -29,7 +29,7 @@ spec:
               masquerade: {}
               ports:
                 - name: http
-                  port: 8080   # Exposing the VM's HTTP service on port 8080
+                  port: 8080 
         machine:
           type: ""
       networks:

@@ -3,7 +3,7 @@ kind: VirtualService
 metadata:
   labels:
     app.kubernetes.io/instance: limits
-  name: limits
+  name: vm
   namespace: istio-system
 spec:
   gateways:

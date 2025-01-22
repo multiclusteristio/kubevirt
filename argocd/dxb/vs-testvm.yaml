@@ -1,19 +1,21 @@
 apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
-  name: testvm-vs
+  labels:
+    app.kubernetes.io/instance: limits
+  name: limits
   namespace: istio-system
 spec:
-  hosts:
-    - '*'
   gateways:
     - istio-system/ingress
+  hosts:
+    - '*'
   http:
     - match:
         - uri:
-            prefix: /payments
+            prefix: /vm
       route:
         - destination:
-            host: testvm-service.payments.svc.cluster.local 
+            host: testvm-service.payments.svc.cluster.local
             port:
-              number: 8080
+              number: 80     

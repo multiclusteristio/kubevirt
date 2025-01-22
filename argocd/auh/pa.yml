@@ -8,4 +8,4 @@ spec:
     matchLabels:
       kubevirt.io/domain: testvm
   mtls:
-    mode: DISABLE
+    mode: PERMISSIVE

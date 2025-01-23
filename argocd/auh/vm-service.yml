@@ -4,7 +4,7 @@ metadata:
   name: istio-vmi-svc
 spec:
   selector:
-    app: istio-vmi
+    app: cirros-vmi
   ports:
   - port: 8080
     protocol: TCP

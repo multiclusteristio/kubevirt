@@ -13,7 +13,7 @@ spec:
         - uri:
             prefix: /payments
       rewrite:
-        uri: ""            
+        uri: "/"  # Rewrite to "/" instead of an empty string
       route:
         - destination:
             host: testvm-service.payments.svc.cluster.local

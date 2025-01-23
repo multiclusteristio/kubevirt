@@ -19,6 +19,6 @@ spec:
       protocol: HTTPS
     hosts:
     - "*"
-    tls:
-      mode: SIMPLE
-      credentialName: tls-secret
+    # tls:
+    #   mode: SIMPLE
+    #   credentialName: tls-secret

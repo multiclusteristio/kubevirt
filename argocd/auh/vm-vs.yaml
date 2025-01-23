@@ -12,8 +12,10 @@ spec:
     - match:
         - uri:
             prefix: /payments
+      rewrite:
+        uri: ""            
       route:
         - destination:
-            host: testvm-service.payments.svc.cluster.local 
+            host: testvm-service.payments.svc.cluster.local
             port:
               number: 8080

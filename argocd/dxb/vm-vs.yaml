@@ -1,0 +1,21 @@
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: testvm-vs
+  namespace: payments
+spec:
+  hosts:
+    - '*'
+  gateways:
+    - istio-system/ingress
+  http:
+    - match:
+        - uri:
+            prefix: /payments
+      rewrite:
+        uri: "/"  # Rewrite to "/" instead of an empty string
+      route:
+        - destination:
+            host: testvm-service.payments.svc.cluster.local
+            port:
+              number: 8080

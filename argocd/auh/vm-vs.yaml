@@ -2,7 +2,7 @@ apiVersion: networking.istio.io/v1beta1
 kind: VirtualService
 metadata:
   name: testvm-vs
-  namespace: payments
+  namespace: default
 spec:
   hosts:
     - '*'
@@ -16,6 +16,6 @@ spec:
         uri: "/"  # Rewrite to "/" instead of an empty string
       route:
         - destination:
-            host: istio-vmi-svc.default.svc.cluster.local
+            host: cirros-vmi-svc.default.svc.cluster.local
             port:
               number: 8080

@@ -16,6 +16,6 @@ spec:
         uri: "/"  # Rewrite to "/" instead of an empty string
       route:
         - destination:
-            host: testvm-service.payments.svc.cluster.local
+            host: istio-vmi-svc.default.svc.cluster.local
             port:
               number: 8080

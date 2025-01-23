@@ -1,10 +1,10 @@
-# apiVersion: networking.istio.io/v1beta1
-# kind: DestinationRule
-# metadata:
-#   name: testvm-dr
-#   namespace: payments
-# spec:
-#   host: testvm-service.payments.svc.cluster.local
-#   trafficPolicy:
-#     tls:
-#       mode: DISABLE
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: testvm-dr
+  namespace: default
+spec:
+  host: cirros-vmi-svc.default.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE

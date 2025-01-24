@@ -4,7 +4,7 @@ metadata:
   name: testvm-dr
   namespace: vm
 spec:
-  host: estvm-service.vm.svc.cluster.local
+  host: testvm-service.vm.svc.cluster.local
   trafficPolicy:
     tls:
       mode: DISABLE

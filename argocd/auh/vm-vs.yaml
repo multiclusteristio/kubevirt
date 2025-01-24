@@ -5,7 +5,7 @@ metadata:
   namespace: vm
 spec:
   hosts:
-    - '*'
+    - 'testvm.vm.svc.cluster.local'
   gateways:
     - istio-system/ingress
   http:

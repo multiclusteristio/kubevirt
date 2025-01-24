@@ -39,7 +39,6 @@ spec:
       networks:
         - name: testMasquerade
           pod: {}
-
       volumes:
         - name: containerdisk
           containerDisk:

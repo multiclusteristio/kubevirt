@@ -7,4 +7,4 @@ spec:
   host: testvm-service.vm.svc.cluster.local
   trafficPolicy:
     tls:
-      mode: PERMISSIVE
+      mode: ISTIO_MUTUAL

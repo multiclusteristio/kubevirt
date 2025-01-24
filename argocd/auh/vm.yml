@@ -1,8 +1,8 @@
 apiVersion: kubevirt.io/v1
 kind: VirtualMachine
 metadata:
-  # annotations:
-  #   sidecar.istio.io/inject: "true"
+  annotations:
+    sidecar.istio.io/inject: "true"
   name: testvm
   namespace: vm
 spec:
@@ -11,8 +11,8 @@ spec:
     metadata: 
       labels:
         app: testvm-app
-      # annotations:
-      #   sidecar.istio.io/inject: "true"        
+      annotations:
+        sidecar.istio.io/inject: "true"        
     spec:
       domain:
         resources:

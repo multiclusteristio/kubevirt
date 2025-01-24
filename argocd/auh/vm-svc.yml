@@ -5,7 +5,7 @@ metadata:
   namespace: vm
 spec:
   selector:
-    kubevirt.io/domain: testvm
+    kubevirt.io/domain: testvm2
   ports:
     - protocol: TCP
       port: 8080

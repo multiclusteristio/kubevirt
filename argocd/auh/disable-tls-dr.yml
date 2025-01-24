@@ -1,0 +1,10 @@
+apiVersion: networking.istio.io/v1beta1
+kind: DestinationRule
+metadata:
+  name: testvm-dr
+  namespace: vm
+spec:
+  host: estvm-service.vm.svc.cluster.local
+  trafficPolicy:
+    tls:
+      mode: DISABLE

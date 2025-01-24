@@ -1,21 +1,21 @@
-apiVersion: networking.istio.io/v1beta1
-kind: VirtualService
-metadata:
-  name: testvm-vs
-  namespace: default
-spec:
-  hosts:
-    - '*'
-  gateways:
-    - istio-system/ingress
-  http:
-    - match:
-        - uri:
-            prefix: /payments
-      rewrite:
-        uri: "/"  # Rewrite to "/" instead of an empty string
-      route:
-        - destination:
-            host: testvm-service.default.svc.cluster.local
-            port:
-              number: 8080
+# apiVersion: networking.istio.io/v1beta1
+# kind: VirtualService
+# metadata:
+#   name: testvm-vs
+#   namespace: default
+# spec:
+#   hosts:
+#     - '*'
+#   gateways:
+#     - istio-system/ingress
+#   http:
+#     - match:
+#         - uri:
+#             prefix: /payments
+#       rewrite:
+#         uri: "/"  # Rewrite to "/" instead of an empty string
+#       route:
+#         - destination:
+#             host: testvm-service.default.svc.cluster.local
+#             port:
+#               number: 8080

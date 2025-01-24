@@ -1,49 +1,49 @@
-apiVersion: kubevirt.io/v1
-kind: VirtualMachine
-metadata:
-  name: testvm
-  namespace: vm
-spec:
-  runStrategy: Always
-  template:
-    metadata: 
-      labels:
-        app: testvm-app
-      annotations:
-        sidecar.istio.io/inject: "true"        
-    spec:
-      domain:
-        resources:
-          requests:
-            memory: 128Mi
-            cpu: 500m
-        devices:
-          disks:
-            - name: containerdisk
-              disk:
-                bus: virtio
-            - name: cloudinitdisk
-              disk:
-                bus: virtio
-          interfaces:
-            - name: testMasquerade
-              masquerade: {}
-              ports:
-                - name: http
-                  port: 8080 
-        machine:
-          type: ""
-      networks:
-        - name: testMasquerade
-          pod: {}
-      volumes:
-        - name: containerdisk
-          containerDisk:
-            image: kubevirt/cirros-container-disk-demo
-        - name: cloudinitdisk
-          cloudInitNoCloud:
-            userData: |
-              #cloud-config
-              users:
-                - name: admin
-                  passwd: admin
+# apiVersion: kubevirt.io/v1
+# kind: VirtualMachine
+# metadata:
+#   name: testvm
+#   namespace: vm
+# spec:
+#   runStrategy: Always
+#   template:
+#     metadata: 
+#       labels:
+#         app: testvm-app
+#       annotations:
+#         sidecar.istio.io/inject: "true"        
+#     spec:
+#       domain:
+#         resources:
+#           requests:
+#             memory: 128Mi
+#             cpu: 500m
+#         devices:
+#           disks:
+#             - name: containerdisk
+#               disk:
+#                 bus: virtio
+#             - name: cloudinitdisk
+#               disk:
+#                 bus: virtio
+#           interfaces:
+#             - name: testMasquerade
+#               masquerade: {}
+#               ports:
+#                 - name: http
+#                   port: 8080 
+#         machine:
+#           type: ""
+#       networks:
+#         - name: testMasquerade
+#           pod: {}
+#       volumes:
+#         - name: containerdisk
+#           containerDisk:
+#             image: kubevirt/cirros-container-disk-demo
+#         - name: cloudinitdisk
+#           cloudInitNoCloud:
+#             userData: |
+#               #cloud-config
+#               users:
+#                 - name: admin
+#                   passwd: admin

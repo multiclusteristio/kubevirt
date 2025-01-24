@@ -19,5 +19,3 @@ spec:
       protocol: HTTPS
     hosts:
     - "*"
-    tls:
-      mode: ISTIO_MUTUAL

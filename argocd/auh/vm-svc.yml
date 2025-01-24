@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: vmsvc
+  namespace: vm
+spec:
+  selector:
+    kubevirt.io/domain: testvm
+  ports:
+    - protocol: TCP
+      port: 8080

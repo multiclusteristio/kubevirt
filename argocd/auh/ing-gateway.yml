@@ -20,5 +20,4 @@ spec:
     hosts:
     - "*"
     tls:
-      mode: SIMPLE
-      credentialName: tls-secret
+      mode: ISTIO_MUTUAL

@@ -1,0 +1,5 @@
+# - name: Apply KubeVirt operator manifest
+#   shell: kubectl --context {{ cluster.kubecontext }} create -f "https://github.com/kubevirt/kubevirt/releases/download/{{ kubevirt_version }}/kubevirt-operator.yaml"
+#   args:
+#     executable: /bin/bash
+

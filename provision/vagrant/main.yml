@@ -90,12 +90,19 @@
       loop_control:
         loop_var: cluster    
 
-    - name: Install kubevirt for auh cluster
-      include_tasks: tasks/kubevirt.yml
-      loop: "{{ clusters }}"
-      loop_control:
-        loop_var: cluster       
-      when: cluster.name == 'auh'  
+    # - name: Install kubevirt for auh cluster
+    #   include_tasks: tasks/kubevirt.yml
+    #   loop: "{{ clusters }}"
+    #   loop_control:
+    #     loop_var: cluster       
+    #   when: cluster.name == 'auh'  
+
+    # - name: Install multus for auh cluster
+    #   include_tasks: tasks/multus.yml
+    #   loop: "{{ clusters }}"
+    #   loop_control:
+    #     loop_var: cluster       
+    #   when: cluster.name == 'auh'        
 
     - name: Install and run kind cloud provider
       include_tasks: tasks/kind_cloud_provider.yml 

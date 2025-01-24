@@ -1,0 +1,20 @@
+
+apiVersion: networking.istio.io/v1beta1
+kind: VirtualService
+metadata:
+  name: testvm-vs2
+  namespace: vm
+spec:
+  hosts:
+  - "testvm.example.com"
+  gateways:
+  - istio-system/ingress
+  http:
+  - match:
+    - uri:
+        prefix: "/"
+    route:
+    - destination:
+        host: testvm-service
+        port:
+          number: 8080

@@ -26,16 +26,20 @@ spec:
               disk:
                 bus: virtio
           interfaces:
-            - name: testMasquerade
+            - name: default
               masquerade: {}
-              ports:
-                - name: http
-                  port: 8080 
+            # - name: testMasquerade
+            #   masquerade: {}
+            #   ports:
+            #     - name: http
+            #       port: 8080 
         machine:
           type: ""
-      networks:
-        - name: testMasquerade
+      networks: 
+        - name: default
           pod: {}
+        # - name: testMasquerade
+        #   pod: {}
       volumes:
         - name: containerdisk
           containerDisk:

@@ -77,3 +77,14 @@ istioctl pc endpoints deploy/istio-ingressgateway.istio-system \
     -o json
  
 
+
+cat <<EOF > /webserver.sh
+#!/bin/sh
+while true; do
+  (echo -e "HTTP/1.0 200 OK\r\n"; echo "Hello from testvm!") | nc -l -p 8080
+done
+EOF
+
+chmod +x /webserver.sh
+nohup /webserver.sh > /var/log/webserver.log 2>&1 &
+
